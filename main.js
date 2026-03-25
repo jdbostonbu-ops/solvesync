@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set, onValue } from "firebase/database";
+import { getDatabase, ref, set, onValue, get, child } from "firebase/database";
+import confetti from 'canvas-confetti';
 
 // 1. GLOBAL STATE (Memory stays alive here)
 let currentStreak = 0;
@@ -29,6 +30,7 @@ const submitBtn = document.getElementById('submit-btn');
 const chalkboard = document.getElementById('chalkboard');
 const streakNumDisplay = document.getElementById('streak-num');
 const nextBtn = document.getElementById('next-btn');
+const highScoreDisplay = document.getElementById('high-score-num');
 
 // 4. CLOUD LISTENERS (Real-time Updates)
 onValue(ref(db, ".info/connected"), (snap) => {
@@ -44,6 +46,12 @@ onValue(ref(db, 'activeProblem'), (snapshot) => {
     if (mathProblemDisplay) {
         mathProblemDisplay.innerText = problem || "Solve for x: 2x + 5 = 15";
     }
+});
+
+// Sync World Record to the UI
+onValue(ref(db, 'worldRecord'), (snapshot) => {
+    const record = snapshot.val() || 0;
+    if (highScoreDisplay) highScoreDisplay.innerText = record;
 });
 
 // Sync the Student's Work (Real-time Typing)
@@ -73,10 +81,8 @@ if (nextBtn) {
     const x = Math.floor(Math.random() * 10) + 1; // Hidden Answer
     const multiplier = Math.floor(Math.random() * 5) + 2;
     const result = x * multiplier;
-
     const problemText = `Solve for x: ${multiplier}x = ${result}`;
-    
-    // Update Cloud
+
     set(ref(db, 'activeProblem'), problemText);
     set(ref(db, 'correctAnswer'), x);
     set(ref(db, 'currentWork'), ""); 
@@ -95,12 +101,29 @@ if (submitBtn) {
         onValue(ref(db, 'correctAnswer'), (snapshot) => {
             const correct = Number(snapshot.val());
 
-            // --- SUCCESS ---
+            // --- SUCCESS CASE ---
             if (userTyped === correct && rawInput !== "") {
-                currentStreak += 1; 
+                currentStreak += 1;
                 if (streakNumDisplay) streakNumDisplay.innerText = currentStreak;
 
-                // Visual Glow Effects
+                // Check for new World Record
+                get(child(ref(db), 'worldRecord')).then((snap) => {
+                    const currentRecord = snap.val() || 0;
+                    if (currentStreak > currentRecord) {
+                        set(ref(db, 'worldRecord'), currentStreak);
+                        console.log("🏆 NEW WORLD RECORD!");
+                    }
+                });
+
+                // Confetti Explosion
+                confetti({
+                    particleCount: 150,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#22d3ee', '#f8fafc', '#334155'] 
+                });
+
+                // Visual Effects
                 chalkboard.classList.add('success-glow');
                 displayArea.style.color = "var(--accent-cyan)";
                 
@@ -114,7 +137,7 @@ if (submitBtn) {
                     inputField.value = ""; 
                 }, 500);
 
-            // --- FAILURE ---
+            // --- FAILURE CASE ---
             } else {
                 currentStreak = 0; 
                 if (streakNumDisplay) streakNumDisplay.innerText = "0";

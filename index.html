@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com" rel="stylesheet">
     <title>SolveSync | Collaborative Problem Solving</title>
     <small id="connection-status">CLOUD_CONNECTED</small>
 </head>
@@ -30,8 +31,11 @@
     <div class="input-wrapper">
         <span class="prompt">></span>
         <input type="text" id="answer-input" placeholder="TYPE_SOLUTION_HERE..." autocomplete="off">
-        <!-- index.html -->
-        <div id="streak-counter">STREAK: <span id="streak-num">0</span></div>
+      
+        <div id="streak-counter">
+        STREAK: <span id="streak-num">0</span> | 
+        RECORD: <span id="high-score-num">0</span>
+        </div>
         <button id="next-btn">NEXT_PROBLEM</button>
         <button id="submit-btn">SUBMIT_ANSWER</button>
     </div>

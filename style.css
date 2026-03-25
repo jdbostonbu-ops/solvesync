@@ -5,6 +5,8 @@
   --chalk-text: #f8fafc;
   --accent-cyan: #22d3ee;
   --danger-red: #ef4444;
+  --font-hand: 'Architects Daughter', cursive;
+  --font-tech: 'Courier New', Courier, monospace;
 }
 
 body {
@@ -62,10 +64,19 @@ h1 { font-size: 1.2rem; margin: 0; letter-spacing: 3px; color: var(--accent-cyan
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 3.5rem;
+  
   font-weight: bold;
-  text-shadow: 0 0 15px rgba(34, 211, 238, 0.4);
+  font-family: var(--font-hand);
+  font-size: 4rem;
+  color: var(--accent-cyan);
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.3); /* Makes it look layered on the board */
+
+  background: linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.1));
+  -webkit-background-clip: text;
+  background-clip: text;
+  opacity: 0.9;
 }
+
 
 .input-wrapper {
   display: flex;
@@ -78,10 +89,12 @@ h1 { font-size: 1.2rem; margin: 0; letter-spacing: 3px; color: var(--accent-cyan
   background: transparent;
   border: none;
   color: var(--accent-cyan);
-  font-size: 1.5rem;
+ 
   outline: none;
   width: 100%;
-  font-family: inherit;
+
+  font-family: var(--font-hand);
+  font-size: 1.8rem;
 }
 
 #clear-btn {
@@ -116,4 +129,11 @@ h1 { font-size: 1.2rem; margin: 0; letter-spacing: 3px; color: var(--accent-cyan
   border-radius: 20px;
   font-size: 0.8rem;
   background: rgba(34, 211, 238, 0.1);
+}
+
+#math-problem {
+  font-family: var(--font-hand);
+  font-size: 2.2rem;
+  color: var(--chalk-text);
+  letter-spacing: 1px;
 }
