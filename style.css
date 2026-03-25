@@ -5,8 +5,8 @@
   --chalk-text: #f8fafc;
   --accent-cyan: #22d3ee;
   --danger-red: #ef4444;
-  --font-hand: 'Architects Daughter', cursive;
-  --font-tech: 'Courier New', Courier, monospace;
+  --font-hand: 'Comic Neue', sans-serif, cursive;
+  --font-tech: 'Comic Neue', sans-serif, cursive;
 }
 
 body {
@@ -16,7 +16,7 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  font-family: 'Courier New', Courier, monospace; /* Technical, monospaced feel */
+  font-family: 'Comic Neue', sans-serif, cursive; /* Technical, monospaced feel */
   color: var(--chalk-text);
 }
 
@@ -67,7 +67,7 @@ h1 { font-size: 1.2rem; margin: 0; letter-spacing: 3px; color: var(--accent-cyan
   
   font-weight: bold;
   font-family: var(--font-hand);
-  font-size: 4rem;
+  font-size: 2rem;
   color: var(--accent-cyan);
   text-shadow: 2px 2px 5px rgba(0,0,0,0.3); /* Makes it look layered on the board */
 
@@ -137,3 +137,44 @@ h1 { font-size: 1.2rem; margin: 0; letter-spacing: 3px; color: var(--accent-cyan
   color: var(--chalk-text);
   letter-spacing: 1px;
 }
+
+.primary-btn {
+  background: var(--accent-cyan);
+  color: var(--slate-dark);
+  border: none;
+  padding: 8px 20px;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  letter-spacing: 1px;
+}
+
+.primary-btn:hover {
+  background: white;
+  box-shadow: 0 0 15px var(--accent-cyan);
+}
+
+.category-menu {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.cat-btn {
+  background: transparent;
+  border: 1px solid var(--slate-border);
+  color: var(--chalk-text);
+  padding: 8px 15px;
+  font-size: 0.7rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.cat-btn:hover {
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  background: rgba(34, 211, 238, 0.1);
+}
+

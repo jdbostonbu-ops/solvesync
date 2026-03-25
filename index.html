@@ -15,7 +15,7 @@
     <div id="chalkboard">
       <header>
         <div class="header-left">
-          <h1>SOLVESYNC <span class="version">v1.0</span></h1>
+          <h1>SOLVESYNC <span class="version">v1.0</span>&nbsp;Collaborative Problem Solving</h1>
           <div id="status-dot"></div>
           <small id="connection-status">INITIALIZING_CLOUD...</small>
         </div>
@@ -36,9 +36,16 @@
         STREAK: <span id="streak-num">0</span> | 
         RECORD: <span id="high-score-num">0</span>
         </div>
-        <button id="next-btn">NEXT_PROBLEM</button>
+        <button id="next-btn" class="primary-btn">SHUFFLE_NEW</button>
         <button id="submit-btn">SUBMIT_ANSWER</button>
     </div>
+        <div class="category-menu">
+        <button class="cat-btn" data-type="add">ADDITION</button>
+        <button class="cat-btn" data-type="sub">SUBTRACTION</button>
+        <button class="cat-btn" data-type="div">DIV</button>
+        <button class="cat-btn" data-type="mult">MULTIPLICATION</button>
+        <button class="cat-btn" data-type="alg">ALGEBRA</button>
+        </div>
 </footer>
 
     </div>

@@ -43,10 +43,13 @@ onValue(ref(db, ".info/connected"), (snap) => {
 // Sync the Problem from Cloud
 onValue(ref(db, 'activeProblem'), (snapshot) => {
     const problem = snapshot.val();
+    
+    // 🟢 FIXED: If 'problem' is null, show a welcoming default
     if (mathProblemDisplay) {
-        mathProblemDisplay.innerText = problem || "Solve for x: 2x + 5 = 15";
+        mathProblemDisplay.innerText = problem || "Select a category below to start!";
     }
 });
+
 
 // Sync World Record to the UI
 onValue(ref(db, 'worldRecord'), (snapshot) => {
@@ -76,21 +79,51 @@ if (clearBtn) {
 }
 
 // Next Problem Generator (Teacher Mode)
+let currentCategory = 'add'; // Default category
+
+//  Category Buttons Logic
+document.querySelectorAll('.cat-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    currentCategory = e.target.getAttribute('data-type');
+    generateProblem(currentCategory); // Generate immediately
+  });
+});
+
+//  The "Next" Button Logic (The Shuffle)
 if (nextBtn) {
   nextBtn.addEventListener('click', () => {
-    const x = Math.floor(Math.random() * 10) + 1; // Hidden Answer
-    const multiplier = Math.floor(Math.random() * 5) + 2;
-    const result = x * multiplier;
-    const problemText = `Solve for x: ${multiplier}x = ${result}`;
-
-    set(ref(db, 'activeProblem'), problemText);
-    set(ref(db, 'correctAnswer'), x);
-    set(ref(db, 'currentWork'), ""); 
-    
-    if (inputField) inputField.value = "";
-    console.log("New Algebra Problem Generated! 🛰️");
+    // It uses the last category you picked!
+    generateProblem(currentCategory);
   });
 }
+
+//  One Master Function to rule them all
+function generateProblem(type) {
+  let num1 = Math.floor(Math.random() * 20) + 1;
+  let num2 = Math.floor(Math.random() * 10) + 1;
+  let q, a;
+
+  if (type === 'add') { q = `${num1} + ${num2} = ?`; a = num1 + num2; }
+  else if (type === 'sub') { q = `${num1 + num2} - ${num2} = ?`; a = num1; }
+  else if (type === 'mult') { q = `${num1} × ${num2} = ?`; a = num1 * num2; }
+  else if (type === 'alg') {
+    let x = Math.floor(Math.random() * 10) + 1;
+    let mult = Math.floor(Math.random() * 5) + 2;
+    q = `Solve for x: ${mult}x = ${x * mult}`; a = x;
+  }
+  else if (type === 'div') { 
+    let dividend = num1 * num2; // e.g., 5 * 10 = 50
+    q = `${dividend} ÷ ${num2} = ?`; // "50 ÷ 10 = ?"
+    a = num1; // Answer is 5
+  }
+
+  // Update Firebase for everyone
+  set(ref(db, 'activeProblem'), q);
+  set(ref(db, 'correctAnswer'), a);
+  set(ref(db, 'currentWork'), "");
+  if (inputField) inputField.value = "";
+}
+
 
 // Submit Answer Logic
 if (submitBtn) {
