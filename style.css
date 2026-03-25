@@ -1,0 +1,119 @@
+:root {
+  --slate-dark: #0f172a;
+  --board-bg: #1e293b;
+  --slate-border: #334155;
+  --chalk-text: #f8fafc;
+  --accent-cyan: #22d3ee;
+  --danger-red: #ef4444;
+}
+
+body {
+  margin: 0;
+  background-color: var(--slate-dark);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: 'Courier New', Courier, monospace; /* Technical, monospaced feel */
+  color: var(--chalk-text);
+}
+
+#chalkboard {
+  width: 90vw;
+  max-width: 900px;
+  height: 60vh;
+  background-color: var(--board-bg);
+  border: 2px solid var(--slate-border);
+  border-radius: 12px;
+  position: relative;
+  padding: 30px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Subtle Grid Background */
+#chalkboard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(var(--slate-border) 1px, transparent 1px),
+                    linear-gradient(90deg, var(--slate-border) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--slate-border);
+  padding-bottom: 15px;
+}
+
+h1 { font-size: 1.2rem; margin: 0; letter-spacing: 3px; color: var(--accent-cyan); }
+.version { font-size: 0.7rem; opacity: 0.5; vertical-align: super; }
+
+#status-dot { width: 8px; height: 8px; background: orange; border-radius: 50%; display: inline-block; margin-right: 5px; }
+
+#student-work {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3.5rem;
+  font-weight: bold;
+  text-shadow: 0 0 15px rgba(34, 211, 238, 0.4);
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding-top: 15px;
+}
+
+#answer-input {
+  background: transparent;
+  border: none;
+  color: var(--accent-cyan);
+  font-size: 1.5rem;
+  outline: none;
+  width: 100%;
+  font-family: inherit;
+}
+
+#clear-btn {
+  background: transparent;
+  border: 1px solid var(--danger-red);
+  color: var(--danger-red);
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 0.7rem;
+  border-radius: 4px;
+}
+
+#clear-btn:hover { background: var(--danger-red); color: white; }
+
+/* The Success Glow Animation */
+@keyframes successPulse {
+  0% { border-color: var(--slate-border); box-shadow: 0 0 0 rgba(34, 211, 238, 0); }
+  50% { border-color: var(--accent-cyan); box-shadow: 0 0 40px rgba(34, 211, 238, 0.6); }
+  100% { border-color: var(--slate-border); box-shadow: 0 0 0 rgba(34, 211, 238, 0); }
+}
+
+/* This class will be added by JavaScript */
+.success-glow {
+  animation: successPulse 1.5s ease-out;
+}
+
+#streak-counter {
+  font-weight: bold;
+  color: var(--accent-cyan);
+  border: 1px solid var(--accent-cyan);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  background: rgba(34, 211, 238, 0.1);
+}

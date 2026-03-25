@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="style.css" />
+    <title>SolveSync | Collaborative Problem Solving</title>
+    <small id="connection-status">CLOUD_CONNECTED</small>
+</head>
+<body>
+
+  <div id="app-container">
+    <div id="chalkboard">
+      <header>
+        <div class="header-left">
+          <h1>SOLVESYNC <span class="version">v1.0</span></h1>
+          <div id="status-dot"></div>
+          <small id="connection-status">INITIALIZING_CLOUD...</small>
+        </div>
+        <button id="clear-btn">CLEAR_BOARD</button>
+      </header>
+
+      <main id="problem-area">
+        <h2 id="math-problem">LOADING_PROBLEM...</h2> 
+        <div id="student-work">READY_FOR_INPUT</div>
+      </main>
+
+   <footer>
+    <div class="input-wrapper">
+        <span class="prompt">></span>
+        <input type="text" id="answer-input" placeholder="TYPE_SOLUTION_HERE..." autocomplete="off">
+        <!-- index.html -->
+        <div id="streak-counter">STREAK: <span id="streak-num">0</span></div>
+        <button id="next-btn">NEXT_PROBLEM</button>
+        <button id="submit-btn">SUBMIT_ANSWER</button>
+    </div>
+</footer>
+
+    </div>
+  </div>
+
+<script type="module" src="/main.js"></script>    
+</body>
+</html>
