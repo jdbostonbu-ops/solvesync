@@ -1,5 +1,5 @@
-import { initializeApp } from "https://www.gstatic.com";
-import { getDatabase, ref, set, onValue, get, child } from "https://www.gstatic.com";
+import { initializeApp } from "firebase/database";
+import { getDatabase, ref, set, onValue, get, child } from "firebase/database";
 import confetti from 'canvas-confetti';
 
 // 1. GLOBAL STATE (Memory stays alive here)
