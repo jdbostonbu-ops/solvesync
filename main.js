@@ -87,16 +87,26 @@ let currentCategory = 'add'; // Default category
 //  Category Buttons Logic
 document.querySelectorAll('.cat-btn').forEach(btn => {
   btn.addEventListener('click', (e) => {
-    currentCategory = e.target.getAttribute('data-type');
-    generateProblem(currentCategory); // Generate immediately
+    const type = e.target.getAttribute('data-type');
+    
+    // ONLY run if it has a data-type (this skips the Show Work button!)
+    if (type) {
+      currentCategory = type;
+      generateProblem(currentCategory); 
+    }
   });
 });
 
-//  The "Next" Button Logic (The Shuffle)
+//  The "Next" Button (The Shuffle)
 if (nextBtn) {
   nextBtn.addEventListener('click', () => {
-    // It uses the last category you picked!
+    // If they haven't picked a category yet, default to 'add'
+    if (!currentCategory) currentCategory = 'add';
+    
     generateProblem(currentCategory);
+    
+    // 🧹 Clear the old work from the chalkboard for the new problem
+    if (displayArea) displayArea.innerText = ""; 
   });
 }
 
@@ -240,20 +250,28 @@ if (submitBtn) {
 
 // --- HINT / SHOW WORK LOGIC ---
 if (hintBtn) {
+  console.log("Found the hint button!"); // Should see this on page load
+  
   hintBtn.addEventListener('click', () => {
+    console.log("CLICKED!"); // If you don't see this, the button isn't firing
+    
     get(ref(db, 'activeSteps')).then((snap) => {
       const work = snap.val();
+      console.log("Data from Firebase:", work); 
+
       if (work) {
-        // 📚 Show the work on the board in yellow!
         displayArea.innerText = "--- HOW TO SOLVE ---\n" + work;
         displayArea.style.color = "#fbbf24"; 
-        
-        // ⚠️ THE PENALTY: Reset streak if they look!
         currentStreak = 0;
         if (streakNumDisplay) streakNumDisplay.innerText = "0";
-        set(ref(db, 'worldRecord'), 0); // Optional: reset record too
+      } else {
+        displayArea.innerText = "No work found in database.";
       }
-    });
+    }).catch(err => console.error("Firebase Error:", err));
   });
+} else {
+  console.error("COULD NOT FIND hint-btn IN HTML");
 }
+
+
 
