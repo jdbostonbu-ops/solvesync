@@ -1,4 +1,4 @@
-import { initializeApp } from "firebase/database";
+import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, onValue, get, child } from "firebase/database";
 import confetti from 'canvas-confetti';
 
