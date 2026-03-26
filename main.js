@@ -27,10 +27,13 @@ const statusText = document.getElementById('connection-status');
 const statusDot = document.getElementById('status-dot');
 const mathProblemDisplay = document.getElementById('math-problem');
 const submitBtn = document.getElementById('submit-btn');
+const hintBtn = document.getElementById('hint-btn');
 const chalkboard = document.getElementById('chalkboard');
 const streakNumDisplay = document.getElementById('streak-num');
 const nextBtn = document.getElementById('next-btn');
 const highScoreDisplay = document.getElementById('high-score-num');
+
+
 
 // 4. CLOUD LISTENERS (Real-time Updates)
 onValue(ref(db, ".info/connected"), (snap) => {
@@ -101,51 +104,70 @@ if (nextBtn) {
 function generateProblem(type) {
   let num1 = Math.floor(Math.random() * 20) + 1;
   let num2 = Math.floor(Math.random() * 10) + 1;
-  let q, a;
+  let q = "";
+  let a = 0;
+  let steps = "";
 
-  if (type === 'add') { q = `${num1} + ${num2} = ?`; a = num1 + num2; }
-  else if (type === 'sub') { q = `${num1 + num2} - ${num2} = ?`; a = num1; }
-  else if (type === 'mult') { q = `${num1} × ${num2} = ?`; a = num1 * num2; }
-
+  if (type === 'add') { 
+    q = `${num1} + ${num2} = ?`; 
+    a = num1 + num2; 
+    steps = `Simply add the two numbers together: ${num1} + ${num2} = ${a}`;
+  } 
+  else if (type === 'sub') { 
+    q = `${num1 + num2} - ${num2} = ?`; 
+    a = num1; 
+    steps = `Subtract ${num2} from ${num1 + num2} to find the difference: ${a}`;
+  } 
+  else if (type === 'mult') { 
+    q = `${num1} × ${num2} = ?`; 
+    a = num1 * num2; 
+    steps = `Multiply ${num1} by ${num2} to get ${a}`;
+  } 
+  else if (type === 'div') { 
+    let d1 = Math.floor(Math.random() * 50) + 10;
+    let d2 = Math.floor(Math.random() * 20) + 2; 
+    let dividend = d1 * d2; 
+    q = `${dividend} ÷ ${d2} = ?`; 
+    a = d1; 
+    steps = `Divide ${dividend} by ${d2}. Think: what times ${d2} equals ${dividend}? The answer is ${a}`;
+  } 
   else if (type === 'alg') {
     let x = Math.floor(Math.random() * 15) + 2; 
-    let choice = Math.floor(Math.random() * 3);// x will be between 10 and 60
-  if (choice === 0) {
+    let choice = Math.floor(Math.random() * 3);
+
+    if (choice === 0) {
       // Format: a(x + b) = c
       let aVal = Math.floor(Math.random() * 5) + 2;
       let bVal = Math.floor(Math.random() * 10) + 1;
       let cVal = aVal * (x + bVal);
       q = `Solve for x: ${aVal}(x + ${bVal}) = ${cVal}`;
       a = x;
-    } else if (choice === 1) {
-      // Format: ax + b = cx + d (Variables on both sides!)
-      let cVal = Math.floor(Math.random() * 4) + 1; // smaller coefficient
-      let aVal = cVal + (Math.floor(Math.random() * 5) + 2); // larger coefficient
+      steps = `1. Divide both sides by ${aVal}: (x + ${bVal}) = ${cVal/aVal}\n2. Subtract ${bVal}: x = ${a}`;
+    } 
+    else if (choice === 1) {
+      // Format: ax + b = cx + d
+      let cVal = Math.floor(Math.random() * 4) + 1;
+      let aVal = cVal + (Math.floor(Math.random() * 5) + 2);
       let bVal = Math.floor(Math.random() * 20) + 1;
       let dVal = (aVal * x + bVal) - (cVal * x);
       q = `Solve for x: ${aVal}x + ${bVal} = ${cVal}x + ${dVal}`;
       a = x;
-    } else {
-      // Format: (ax) / b = c (The one we did before, but bigger)
+      steps = `1. Subtract ${cVal}x from both sides: ${aVal - cVal}x + ${bVal} = ${dVal}\n2. Subtract ${bVal}: ${aVal - cVal}x = ${dVal - bVal}\n3. Divide: x = ${a}`;
+    } 
+    else {
+      // Format: (ax) / b = c
       let mult = Math.floor(Math.random() * 8) + 3;
       let div = Math.floor(Math.random() * 6) + 2;
       let res = (mult * x) / div;
-      // Ensure whole number result
       while (res % 1 !== 0) { x++; res = (mult * x) / div; }
       q = `Solve for x: (${mult}x) / ${div} = ${res}`;
       a = x;
+      steps = `1. Multiply both sides by ${div}: ${mult}x = ${res * div}\n2. Divide by ${mult}: x = ${a}`;
     }
   }
 
- else if (type === 'div') { 
-    let num1 = Math.floor(Math.random() * 50) + 10; // Larger numbers
-    let num2 = Math.floor(Math.random() * 20) + 2; 
-    let dividend = num1 * num2; 
-    q = `Solve: ${dividend} ÷ ${num2} = ?`; 
-    a = num1; 
-  }
-
-  // Update Firebase for everyone
+  // --- MASTER UPDATE (Runs once at the end) ---
+  set(ref(db, 'activeSteps'), steps); 
   set(ref(db, 'activeProblem'), q);
   set(ref(db, 'correctAnswer'), a);
   set(ref(db, 'currentWork'), "");
@@ -194,8 +216,11 @@ if (submitBtn) {
 
                 setTimeout(() => {
                     alert(`CORRECT! 🚀 STREAK: ${currentStreak}`);
+
                     chalkboard.classList.remove('success-glow');
                     inputField.value = ""; 
+
+                    generateProblem(currentCategory); 
                 }, 500);
 
             // --- FAILURE CASE ---
@@ -211,3 +236,24 @@ if (submitBtn) {
         }, { onlyOnce: true });
     });
 }
+
+
+// --- HINT / SHOW WORK LOGIC ---
+if (hintBtn) {
+  hintBtn.addEventListener('click', () => {
+    get(ref(db, 'activeSteps')).then((snap) => {
+      const work = snap.val();
+      if (work) {
+        // 📚 Show the work on the board in yellow!
+        displayArea.innerText = "--- HOW TO SOLVE ---\n" + work;
+        displayArea.style.color = "#fbbf24"; 
+        
+        // ⚠️ THE PENALTY: Reset streak if they look!
+        currentStreak = 0;
+        if (streakNumDisplay) streakNumDisplay.innerText = "0";
+        set(ref(db, 'worldRecord'), 0); // Optional: reset record too
+      }
+    });
+  });
+}
+
