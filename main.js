@@ -250,14 +250,15 @@ if (submitBtn) {
 
 // --- HINT / SHOW WORK LOGIC ---
 if (hintBtn) {
-  console.log("Found the hint button!"); // Should see this on page load
+  console.log("Found the hint button!");
   
-  hintBtn.addEventListener('click', () => {
-    console.log("CLICKED!"); // If you don't see this, the button isn't firing
+  hintBtn.addEventListener('click', (e) => {
+    e.stopPropagation(); // 👈 Added this to stop the "Select Category" popup
+    console.log("CLICKED!");
     
     get(ref(db, 'activeSteps')).then((snap) => {
       const work = snap.val();
-      console.log("Data from Firebase:", work); 
+      console.log("Firebase Data Received:", work); 
 
       if (work) {
         displayArea.innerText = "--- HOW TO SOLVE ---\n" + work;
@@ -267,11 +268,15 @@ if (hintBtn) {
       } else {
         displayArea.innerText = "No work found in database.";
       }
-    }).catch(err => console.error("Firebase Error:", err));
+    }).catch(err => {
+      console.error("Firebase Error:", err.message);
+    });
+    // ❌ DELETE THE EXTRA console.error LINE THAT WAS HERE
   });
 } else {
   console.error("COULD NOT FIND hint-btn IN HTML");
 }
+
 
 
 
