@@ -107,14 +107,21 @@ function generateProblem(type) {
   else if (type === 'sub') { q = `${num1 + num2} - ${num2} = ?`; a = num1; }
   else if (type === 'mult') { q = `${num1} × ${num2} = ?`; a = num1 * num2; }
   else if (type === 'alg') {
-    let x = Math.floor(Math.random() * 50) + 10; // x will be between 10 and 60
-    let multiplier = Math.floor(Math.random() * 5) + 2; // A
-    let divisor = Math.floor(Math.random() * 10) + 2; 
+    let x = Math.floor(Math.random() * 20) + 2; // x will be between 10 and 60
+    let multiplier = Math.floor(Math.random() * 5) + 2; 
+    let divisor = Math.floor(Math.random() * 10) + 2;
 
     let result = (multiplier * x) / divisor;
 
-      q = `Solve for x: (${multiplier}x) / ${divisor} = ${result}`; 
-    a = x;
+   if (result % 1 !== 0) {
+       let b = Math.floor(Math.random() * 20) + 1;
+       let c = (multiplier * x) + b;
+       q = `Solve for x: ${multiplier}x + ${b} = ${c}`;
+       a = x;
+    } else {
+       q = `Solve for x: (${multiplier}x) / ${divisor} = ${result}`; 
+       a = x;
+    }
   }
 
  else if (type === 'div') { 
