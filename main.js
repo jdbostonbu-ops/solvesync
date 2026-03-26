@@ -106,21 +106,34 @@ function generateProblem(type) {
   if (type === 'add') { q = `${num1} + ${num2} = ?`; a = num1 + num2; }
   else if (type === 'sub') { q = `${num1 + num2} - ${num2} = ?`; a = num1; }
   else if (type === 'mult') { q = `${num1} × ${num2} = ?`; a = num1 * num2; }
+
   else if (type === 'alg') {
-    let x = Math.floor(Math.random() * 20) + 2; // x will be between 10 and 60
-    let multiplier = Math.floor(Math.random() * 5) + 2; 
-    let divisor = Math.floor(Math.random() * 10) + 2;
-
-    let result = (multiplier * x) / divisor;
-
-   if (result % 1 !== 0) {
-       let b = Math.floor(Math.random() * 20) + 1;
-       let c = (multiplier * x) + b;
-       q = `Solve for x: ${multiplier}x + ${b} = ${c}`;
-       a = x;
+    let x = Math.floor(Math.random() * 15) + 2; 
+    let choice = Math.floor(Math.random() * 3);// x will be between 10 and 60
+  if (choice === 0) {
+      // Format: a(x + b) = c
+      let aVal = Math.floor(Math.random() * 5) + 2;
+      let bVal = Math.floor(Math.random() * 10) + 1;
+      let cVal = aVal * (x + bVal);
+      q = `Solve for x: ${aVal}(x + ${bVal}) = ${cVal}`;
+      a = x;
+    } else if (choice === 1) {
+      // Format: ax + b = cx + d (Variables on both sides!)
+      let cVal = Math.floor(Math.random() * 4) + 1; // smaller coefficient
+      let aVal = cVal + (Math.floor(Math.random() * 5) + 2); // larger coefficient
+      let bVal = Math.floor(Math.random() * 20) + 1;
+      let dVal = (aVal * x + bVal) - (cVal * x);
+      q = `Solve for x: ${aVal}x + ${bVal} = ${cVal}x + ${dVal}`;
+      a = x;
     } else {
-       q = `Solve for x: (${multiplier}x) / ${divisor} = ${result}`; 
-       a = x;
+      // Format: (ax) / b = c (The one we did before, but bigger)
+      let mult = Math.floor(Math.random() * 8) + 3;
+      let div = Math.floor(Math.random() * 6) + 2;
+      let res = (mult * x) / div;
+      // Ensure whole number result
+      while (res % 1 !== 0) { x++; res = (mult * x) / div; }
+      q = `Solve for x: (${mult}x) / ${div} = ${res}`;
+      a = x;
     }
   }
 
