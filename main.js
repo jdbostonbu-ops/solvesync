@@ -107,14 +107,22 @@ function generateProblem(type) {
   else if (type === 'sub') { q = `${num1 + num2} - ${num2} = ?`; a = num1; }
   else if (type === 'mult') { q = `${num1} × ${num2} = ?`; a = num1 * num2; }
   else if (type === 'alg') {
-    let x = Math.floor(Math.random() * 10) + 1;
-    let mult = Math.floor(Math.random() * 5) + 2;
-    q = `Solve for x: ${mult}x = ${x * mult}`; a = x;
+    let x = Math.floor(Math.random() * 50) + 10; // x will be between 10 and 60
+    let multiplier = Math.floor(Math.random() * 5) + 2; // A
+    let divisor = Math.floor(Math.random() * 10) + 2; 
+
+    let result = (multiplier * x) / divisor;
+
+      q = `Solve for x: (${multiplier}x) / ${divisor} = ${result}`; 
+    a = x;
   }
-  else if (type === 'div') { 
-    let dividend = num1 * num2; // e.g., 5 * 10 = 50
-    q = `${dividend} ÷ ${num2} = ?`; // "50 ÷ 10 = ?"
-    a = num1; // Answer is 5
+
+ else if (type === 'div') { 
+    let num1 = Math.floor(Math.random() * 50) + 10; // Larger numbers
+    let num2 = Math.floor(Math.random() * 20) + 2; 
+    let dividend = num1 * num2; 
+    q = `Solve: ${dividend} ÷ ${num2} = ?`; 
+    a = num1; 
   }
 
   // Update Firebase for everyone
