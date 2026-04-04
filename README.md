@@ -8,6 +8,7 @@ A real-time collaborative math platform built for interactive learning.
 - **Modern UI**: A professional "Slate & Cyan" engineering aesthetic.
 
 ### Tech Stack
+- **Compatibility** Mobile Compatibilty for iOS/Tablet/iPad
 - **Frontend**: Vite, JavaScript (ES6+), CSS3
 - **Backend**: Firebase Realtime Database
 - **Animations**: Canvas-Confetti, CSS Keyframes
