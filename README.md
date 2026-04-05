@@ -33,7 +33,6 @@ The current version of the **"Show Work"** feature provides a direct look at the
 *   **Current State:** Successfully displays the logic behind each sync.
 *   **Future Roadmap:** I am currently refining the step-by-step structure to provide a more elaborate, granular breakdown of each phase. This update will improve the educational value by guiding users through a more structured, logical flow.
 
-
 ## Features
 - **Real-Time Sync**: Powered by Firebase Realtime Database for instant tutor-student interaction.
 - **Algebra Engine**: Algorithmic problem generation for infinite practice.
