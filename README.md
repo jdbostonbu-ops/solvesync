@@ -1,6 +1,10 @@
 # SolveSync 🚀
 A real-time collaborative math platform built for interactive learning.
 
+## 👤 Author
+**Jacqueline**  
+[Check out my GitHub Profile](https://github.com/jdbostonbu-ops)
+
 ### Features
 - **Real-Time Sync**: Powered by Firebase Realtime Database for instant tutor-student interaction.
 - **Algebra Engine**: Algorithmic problem generation for infinite practice.
