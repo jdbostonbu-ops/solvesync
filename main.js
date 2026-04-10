@@ -7,7 +7,7 @@ let currentStreak = 0;
 
 // 2. FIREBASE CONFIG
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY, 
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY, // updated apiKey with Google cloud, secured apiKey to prevent leakage by creating an env file //
   authDomain: "solvesync-6f45a.firebaseapp.com",
   databaseURL: "https://solvesync-6f45a-default-rtdb.firebaseio.com", 
   projectId: "solvesync-6f45a",
