@@ -7,7 +7,7 @@ let currentStreak = 0;
 
 // 2. FIREBASE CONFIG
 const firebaseConfig = {
-  apiKey: "AIza...", 
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY, 
   authDomain: "solvesync-6f45a.firebaseapp.com",
   databaseURL: "https://solvesync-6f45a-default-rtdb.firebaseio.com", 
   projectId: "solvesync-6f45a",
