@@ -1,7 +1,3 @@
-import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set, onValue, get, child } from "firebase/database";
-import confetti from 'canvas-confetti';
-
 // 1. GLOBAL STATE (Memory stays alive here)
 let currentStreak = 0;
 
@@ -32,11 +28,10 @@ const chalkboard = document.getElementById('chalkboard');
 const streakNumDisplay = document.getElementById('streak-num');
 const nextBtn = document.getElementById('next-btn');
 const highScoreDisplay = document.getElementById('high-score-num');
-let totalRounds = 0;
 
 
 
-// 4. CLOUD LISTENERS (Real-time Updates)
+//  CLOUD LISTENERS (Real-time Updates)
 onValue(ref(db, ".info/connected"), (snap) => {
   if (snap.val() === true) {
     statusText.innerText = "CLOUD_SYNC_ACTIVE";
@@ -185,119 +180,8 @@ function generateProblem(type) {
   if (inputField) inputField.value = "";
 }
 
-// --- ALL-IN-ONE REWARD LOGIC (Branchy Celebration) ---
 
-function triggerStreakReward(streak) {
-  const bot = document.getElementById('math-bot');
-  const botBubble = document.getElementById('bot-bubble');
-  const rocket = document.getElementById('cosmo-rocket');
-  const rocketBubble = document.getElementById('cosmo-bubble');
-  const chalkboard = document.getElementById('chalkboard');
-
-  // --- 🚀 STREAK 5: COSMO THE ROCKET BLAST OFF ---
-  if (streak % 5 === 0) {
-    if (!rocket || !rocketBubble) return;
-    
-    // Stage 1: Glide into view and park
-    rocket.style.transition = "bottom 1s ease-out";
-    rocket.style.bottom = "120px"; 
-    rocketBubble.style.display = "block";
-    if (chalkboard) chalkboard.classList.add('shake-screen');
-
-    // Stage 2: Ignition puff
-    setTimeout(() => {
-      confetti({ particleCount: 60, spread: 80, origin: { x: 0.5, y: 0.8 }, colors: ['#4b5563', '#ff4500'] });
-
-      // Stage 3: Slow majestic blast off
-      setTimeout(() => {
-        rocket.style.transition = "bottom 5s cubic-bezier(0.1, 0, 1, 1)"; 
-        rocket.style.bottom = "180%"; 
-        
-        const end = Date.now() + 4500;
-        (function frame() {
-          confetti({
-            particleCount: 12,
-            angle: 270, 
-            spread: 45,
-            origin: { x: 0.5, y: 0.5 }, 
-            colors: ['#ff4500', '#ffa500', '#ffff00'],
-            gravity: 2
-          });
-          if (Date.now() < end) requestAnimationFrame(frame);
-        }());
-      }, 1500); 
-    }, 500);
-
-    setTimeout(() => {
-      rocketBubble.style.display = "none";
-      if (chalkboard) chalkboard.classList.remove('shake-screen');
-      rocket.style.transition = "none";
-      rocket.style.bottom = "-400px";
-    }, 7500);
-  } 
-
-  // --- 🤖 STREAK 3: BRANCHY DANCE ---
-  else if (streak % 3 === 0) {
-    if (!bot || !botBubble) return;
-    bot.style.bottom = '80px';
-    bot.classList.add('bot-dancing');
-    botBubble.style.display = 'block';
-
-    setTimeout(() => {
-      bot.style.bottom = '-450px';
-      botBubble.style.display = 'none';
-      bot.classList.remove('bot-dancing');
-    }, 4500);
-  }
-}
-
-function triggerPersistenceReward() {
-  const banner = document.getElementById('persistence-banner');
-  if (!banner) return;
-
-  setTimeout(() => {
-  // Slide down and Fade in
-  banner.style.top = '50px';
-  banner.style.opacity = '1';
-
-  // Sprinkle Fairy Dust (Purple/Gold/Silver Confetti)
-  const duration = 4000;
-  const end = Date.now() + duration;
-
-  (function frame() {
-    confetti({
-      particleCount: 3,
-      angle: 60,
-      spread: 55,
-      origin: { x: 0, y: 0.3 }, // Sprinkles from the side
-      colors: ['#f0abfc', '#fbbf24', '#ffffff']
-    });
-    confetti({
-      particleCount: 3,
-      angle: 120,
-      spread: 55,
-      origin: { x: 1, y: 0.3 },
-      colors: ['#f0abfc', '#fbbf24', '#ffffff']
-    });
-
-    if (Date.now() < end) requestAnimationFrame(frame);
-  }());
-
-  // Dissolve and Slide out
-  setTimeout(() => {
-    banner.style.top = '20px';
-    banner.style.opacity = '0';
-    banner.style.filter = 'blur(10px)'; // The "dissolve" effect
-    
-    setTimeout(() => {
-      banner.style.top = '-100px';
-      banner.style.filter = 'blur(0px)';
-    }, 1000);
-  }, 4000);
-}, 8500);
-}
-
-// --- SUBMIT ANSWER LOGIC (Preserved Original + All Rewards) ---
+// Submit Answer Logic
 if (submitBtn) {
     submitBtn.addEventListener('click', () => {
         const rawInput = inputField.value.trim();
@@ -310,15 +194,6 @@ if (submitBtn) {
             if (userTyped === correct && rawInput !== "") {
                 currentStreak += 1;
                 if (streakNumDisplay) streakNumDisplay.innerText = currentStreak;
-
-                if (currentStreak > 0 && currentStreak % 5 === 0) {
-                    // This keeps the Rocket blasting off every 5, 10, 15, etc.
-                    triggerStreakReward(currentStreak); 
-                } 
-                else if (currentStreak === 3) { 
-                    // This makes Branchy the Robot show up ONLY at streak 3 and never again.
-                    triggerStreakReward(currentStreak);
-                }
 
                 // Check for new World Record
                 get(child(ref(db), 'worldRecord')).then((snap) => {
@@ -347,8 +222,10 @@ if (submitBtn) {
 
                 setTimeout(() => {
                     alert(`CORRECT! 🚀 STREAK: ${currentStreak}`);
+
                     chalkboard.classList.remove('success-glow');
                     inputField.value = ""; 
+
                     generateProblem(currentCategory); 
                 }, 500);
 
@@ -366,24 +243,9 @@ if (submitBtn) {
     });
 }
 
-// This listener ONLY handles the 10-round banner reward
-if (submitBtn) {
-    submitBtn.addEventListener('click', () => {
-        const rawInput = inputField.value.trim();
-        
-        // If the box isn't empty, count the round
-        if (rawInput !== "") {
-            totalRounds++;
-            
-            // If they reached round 10, 20, 30... show the banner
-            if (totalRounds % 10 === 0) {
-                triggerPersistenceReward();
-            }
-        }
-    });
-}
 
 
+// --- HINT / SHOW WORK LOGIC ---
 // --- HINT / SHOW WORK LOGIC ---
 if (hintBtn) {
     displayArea.innerText = "";
@@ -467,34 +329,15 @@ if (hintBtn) {
                     steps.push(`Step 5: ${s1[0]} + ${s1[1]} + ${s2[0]} + (${s2[1] - n2}) = ${n1 - n2}`);
                     steps.push(`Final Difference: ${n1 - n2}`);
                 } 
-               
-                // --- DIVISION (Extended logic) ---
+                // --- DIVISION ---
                 else if (text.includes("÷") || text.includes("/") || text.includes("divide")) {
                     const n1 = Number(nums[0]), n2 = Number(nums[1]);
                     const f1 = n2 * 10;
-                    const remain = n1 - f1;
-                    const q1 = 10;
-                    const q2 = remain / n2;
-
-                    steps.push(`Step 1: Break ${n1} into friendly numbers: ${f1} + ${remain}`);
-                    
-                    steps.push(`Step 2: Divide the first part\n    ${f1} ÷ ${n2} = ${q1}`);
-                    steps.push(`    Check: ${n2} x ${q1} = ${f1} (Matches!)`);
-
-                    steps.push(`Step 3: Divide the remaining part\n    ${remain} ÷ ${n2} = ${q2}`);
-                    
-                    // Pushing an extra simplification step if the remainder is double digits
-                    if (remain >= 10) {
-                        const sub1 = n2 * Math.floor(q2 / 2);
-                        const sub2 = remain - sub1;
-                        steps.push(`    Simplify ${remain} more: (${sub1} + ${sub2}) ÷ ${n2}\n    ${sub1}÷${n2}=${sub1/n2} and ${sub2}÷${n2}=${sub2/n2}`);
-                    }
-                    
-                    steps.push(`Step 4: Combine the quotients\n    ${q1} + ${q2} = ${q1 + q2}`);
-                    
+                    steps.push(`Step 1: Break ${n1} into friendly numbers: ${f1} + ${n1 - f1}`);
+                    steps.push(`Step 2: Divide ${f1} ÷ ${n2} = 10`);
+                    steps.push(`Step 3: Divide remaining: ${n1 - f1} ÷ ${n2} = ${(n1 - f1) / n2}`);
+                    steps.push(`Step 4: Combine: 10 + ${(n1 - f1) / n2} = ${n1 / n2}`);
                     steps.push(`Final Quotient: ${n1 / n2}`);
-
-
                 } else {
                     steps.push(dbSteps);
                 }
