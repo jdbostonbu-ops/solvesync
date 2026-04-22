@@ -111,28 +111,23 @@ if (nextBtn) {
   });
 }
 
-//  One Master Function to rule them all
 function generateProblem(type) {
   let num1 = Math.floor(Math.random() * 20) + 1;
   let num2 = Math.floor(Math.random() * 10) + 1;
   let q = "";
   let a = 0;
-  let steps = "";
 
   if (type === 'add') { 
     q = `${num1} + ${num2} = ?`; 
     a = num1 + num2; 
-    steps = `Simply add the two numbers together: ${num1} + ${num2} = ${a}`;
   } 
   else if (type === 'sub') { 
     q = `${num1 + num2} - ${num2} = ?`; 
     a = num1; 
-    steps = `Subtract ${num2} from ${num1 + num2} to find the difference: ${a}`;
   } 
   else if (type === 'mult') { 
     q = `${num1} × ${num2} = ?`; 
     a = num1 * num2; 
-    steps = `Multiply ${num1} by ${num2} to get ${a}`;
   } 
   else if (type === 'div') { 
     let d1 = Math.floor(Math.random() * 50) + 10;
@@ -140,45 +135,37 @@ function generateProblem(type) {
     let dividend = d1 * d2; 
     q = `${dividend} ÷ ${d2} = ?`; 
     a = d1; 
-    steps = `Divide ${dividend} by ${d2}. Think: what times ${d2} equals ${dividend}? The answer is ${a}`;
   } 
   else if (type === 'alg') {
     let x = Math.floor(Math.random() * 15) + 2; 
     let choice = Math.floor(Math.random() * 3);
 
     if (choice === 0) {
-      // Format: a(x + b) = c
       let aVal = Math.floor(Math.random() * 5) + 2;
       let bVal = Math.floor(Math.random() * 10) + 1;
       let cVal = aVal * (x + bVal);
       q = `Solve for x: ${aVal}(x + ${bVal}) = ${cVal}`;
       a = x;
-      steps = `1. Divide both sides by ${aVal}: (x + ${bVal}) = ${cVal/aVal}\n2. Subtract ${bVal}: x = ${a}`;
     } 
     else if (choice === 1) {
-      // Format: ax + b = cx + d
       let cVal = Math.floor(Math.random() * 4) + 1;
       let aVal = cVal + (Math.floor(Math.random() * 5) + 2);
       let bVal = Math.floor(Math.random() * 20) + 1;
       let dVal = (aVal * x + bVal) - (cVal * x);
       q = `Solve for x: ${aVal}x + ${bVal} = ${cVal}x + ${dVal}`;
       a = x;
-      steps = `1. Subtract ${cVal}x from both sides: ${aVal - cVal}x + ${bVal} = ${dVal}\n2. Subtract ${bVal}: ${aVal - cVal}x = ${dVal - bVal}\n3. Divide: x = ${a}`;
     } 
     else {
-      // Format: (ax) / b = c
       let mult = Math.floor(Math.random() * 8) + 3;
       let div = Math.floor(Math.random() * 6) + 2;
       let res = (mult * x) / div;
       while (res % 1 !== 0) { x++; res = (mult * x) / div; }
       q = `Solve for x: (${mult}x) / ${div} = ${res}`;
       a = x;
-      steps = `1. Multiply both sides by ${div}: ${mult}x = ${res * div}\n2. Divide by ${mult}: x = ${a}`;
     }
   }
 
   // --- MASTER UPDATE (Runs once at the end) ---
-  set(ref(db, 'activeSteps'), steps); 
   set(ref(db, 'activeProblem'), q);
   set(ref(db, 'correctAnswer'), a);
   set(ref(db, 'currentWork'), "");
@@ -384,126 +371,64 @@ if (submitBtn) {
 }
 
 
-// --- HINT / SHOW WORK LOGIC ---
+// --- DYNAMIC AI HINT LOGIC using Gemini AI API ---
 if (hintBtn) {
-    displayArea.innerText = "";
-
-    hintBtn.addEventListener('click', (e) => {
+    hintBtn.addEventListener('click', async (e) => {
         e.stopPropagation();
+        
+        displayArea.innerText = "Analyzing problem and generating steps...";
 
         const problemRef = ref(db, 'activeProblem');
-        const stepsRef = ref(db, 'activeSteps');
+        
+        try {
+            const snapshot = await get(problemRef);
+            const problemText = snapshot.val();
+            console.log("Sending to AI:", problemText); 
 
-        Promise.all([get(problemRef), get(stepsRef)]).then((snapshots) => {
-            const problemText = snapshots[0].val() || "";
-            const dbSteps = snapshots[1].val() || "";
-
-            if (problemText) {
-                let steps = [];
-                const nums = problemText.match(/\d+/g) || ["0", "0", "0", "0"];
-                const text = problemText.toLowerCase();
-                const split = (num) => [Math.floor(num / 2), Math.ceil(num / 2)];
-
-                // --- ALGEBRA ---
-                if (text.includes("x") && text.includes("=")) {
-                    if (text.includes("(") && text.includes("+")) {
-                        const a = Number(nums[0]), b = Number(nums[1]), c = Number(nums[2]);
-                        const quotient = c / a;
-                        steps.push(`Step 1: Identify Equation: ${a}(x + ${b}) = ${c}`);
-                        steps.push(`Step 2: Divide BOTH sides by ${a}\n    ${a}(x + ${b}) / ${a} = ${c} / ${a}\n    Result: x + ${b} = ${quotient}`);
-                        steps.push(`Step 3: Subtract ${b} from BOTH sides\n    x + ${b} - ${b} = ${quotient} - ${b}`);
-                        steps.push(`Step 4: x = ${quotient} - ${b}`);
-                        steps.push(`Final Result: x = ${quotient - b}`);
-                    } else if (text.includes("/")) {
-                        const coeff = Number(nums[0]), divi = Number(nums[1]), res = Number(nums[2]);
-                        const product = res * divi;
-                        steps.push(`Step 1: Identify Equation: (${coeff}x) / ${divi} = ${res}`);
-                        steps.push(`Step 2: Multiply BOTH sides by (${divi})\n    (${divi}) * ${coeff}x / ${divi} = ${res} * (${divi})\n    Result: ${coeff}x = ${product}`);
-                        steps.push(`Step 3: Divide BOTH sides by ${coeff}\n    ${coeff}x / ${coeff} = ${product} / ${coeff}`);
-                        steps.push(`Step 4: x = ${product} / ${coeff}`);
-                        steps.push(`Final Result: x = ${product / coeff}`);
-                    } else if (text.match(/\d+x.*=.*\d+x/)) {
-                        const lC = Number(nums[0]), lCt = Number(nums[1]), rC = Number(nums[2]), rCt = Number(nums[3]);
-                        const nC = lC - rC, fC = rCt - lCt;
-                        steps.push(`Step 1: ${lC}x + ${lCt} = ${rC}x + ${rCt}`);
-                        steps.push(`Step 2: Subtract ${rC}x from BOTH sides\n    Result: ${nC}x + ${lCt} = ${rCt}`);
-                        steps.push(`Step 3: Subtract ${lCt} from BOTH sides\n    Result: ${nC}x = ${fC}`);
-                        steps.push(`Step 4: Divide BOTH sides by ${nC}\n    ${nC}x / ${nC} = ${fC} / ${nC}`);
-                        steps.push(`Final Result: x = ${fC / nC}`);
-                    }
-                } 
-                // --- MULTIPLICATION (REPAIRED) ---
-                else if (text.includes("x") || text.includes("*") || text.includes("×") || text.includes("times")) {
-                    const n1 = Number(nums[0]), n2 = Number(nums[1]);
-                    const p1 = split(n1); // e.g., 18 -> 9, 9
-                    const s1 = split(p1[0]), s2 = split(p1[1]); // e.g., 9 -> 4, 5
-
-                    steps.push(`Step 1: Identify ${n1} x ${n2}`);
-                    steps.push(`Step 2: Break ${n1} into parts\n    ${n1} = ${p1[0]} + ${p1[1]}`);
-                    steps.push(`Step 3: Deep Break parts\n    ${p1[0]} = ${s1[0]} + ${s1[1]} and ${p1[1]} = ${s2[0]} + ${s2[1]}`);
-                    steps.push(`Step 4: Multiply all parts by ${n2}\n    (${s1[0]}*${n2}) + (${s1[1]}*${n2}) + (${s2[0]}*${n2}) + (${s2[1]}*${n2})`);
-                    steps.push(`Step 5: Combine results\n    ${s1[0]*n2} + ${s1[1]*n2} + ${s2[0]*n2} + ${s2[1]*n2} = ${n1 * n2}`);
-                    steps.push(`Final Total: ${n1 * n2}`);
-                } 
-                else if (text.includes("+")) {
-                    const n1 = Number(nums[0]), n2 = Number(nums[1]);
-                    const p1 = split(n1);
-                    const p2 = split(n2);
-                    steps.push(`Step 1: Align ${n1} & ${n2}`);
-                    steps.push(`Step 2: ${n1} = ${p1[0]} + ${p1[1]}`);
-                    steps.push(`Step 3: ${n2} = ${p2[0]} + ${p2[1]}`);
-                    steps.push(`Step 4: ${p1[0]} + ${p1[1]} + ${p2[0]} + ${p2[1]} = ${n1 + n2}`);
-                    steps.push(`Final Total: ${n1 + n2}`);
-                }
-                // --- SUBTRACTION ---
-                else if (text.includes("-")) {
-                    const n1 = Number(nums[0]), n2 = Number(nums[1]);
-                    const p1 = split(n1);
-                    const s1 = split(p1[0]), s2 = split(p1[1]);
-                    steps.push(`Step 1: ${n1} = ${p1[0]} + ${p1[1]}`);
-                    steps.push(`Step 2: ${p1[0]} = ${s1[0]} + ${s1[1]} and ${p1[1]} = ${s2[0]} + ${s2[1]}`);
-                    steps.push(`Step 3: Parts: ${s1[0]} + ${s1[1]} + ${s2[0]} + ${s2[1]}`);
-                    steps.push(`Step 4: Subtract: ${s1[0]} + ${s1[1]} + ${s2[0]} + (${s2[1]} - ${n2})`);
-                    steps.push(`Step 5: ${s1[0]} + ${s1[1]} + ${s2[0]} + (${s2[1] - n2}) = ${n1 - n2}`);
-                    steps.push(`Final Difference: ${n1 - n2}`);
-                } 
-               
-                // --- DIVISION (Extended logic) ---
-                else if (text.includes("÷") || text.includes("/") || text.includes("divide")) {
-                    const n1 = Number(nums[0]), n2 = Number(nums[1]);
-                    const f1 = n2 * 10;
-                    const remain = n1 - f1;
-                    const q1 = 10;
-                    const q2 = remain / n2;
-
-                    steps.push(`Step 1: Break ${n1} into friendly numbers: ${f1} + ${remain}`);
-                    
-                    steps.push(`Step 2: Divide the first part\n    ${f1} ÷ ${n2} = ${q1}`);
-                    steps.push(`    Check: ${n2} x ${q1} = ${f1} (Matches!)`);
-
-                    steps.push(`Step 3: Divide the remaining part\n    ${remain} ÷ ${n2} = ${q2}`);
-                    
-                    // Pushing an extra simplification step if the remainder is double digits
-                    if (remain >= 10) {
-                        const sub1 = n2 * Math.floor(q2 / 2);
-                        const sub2 = remain - sub1;
-                        steps.push(`    Simplify ${remain} more: (${sub1} + ${sub2}) ÷ ${n2}\n    ${sub1}÷${n2}=${sub1/n2} and ${sub2}÷${n2}=${sub2/n2}`);
-                    }
-                    
-                    steps.push(`Step 4: Combine the quotients\n    ${q1} + ${q2} = ${q1 + q2}`);
-                    
-                    steps.push(`Final Quotient: ${n1 / n2}`);
-
-
-                } else {
-                    steps.push(dbSteps);
-                }
-
-                displayArea.innerText = "--- HOW TO SOLVE ---\n" + steps.join("\n\n");
-                displayArea.style.color = "#fbbf24";
+            if (!problemText) {
+                displayArea.innerText = "NEW_PROBLEM_LOADED";
+                displayArea.style.color = "var(--chalk-text)";
+                displayArea.innerText = "Please select a math problem first!";
+                return;
             }
-        }).catch(err => console.error("Sync Error:", err));
+
+            const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+            const MODEL = "gemini-2.5-flash"; // Updated to the latest Gemini model
+            const URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`;
+            const response = await fetch(URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{
+                        text: `Act as a 4th-8th grade math tutor. Solve this problem: "${problemText}". 
+                        Break it into exactly as many steps as needed for a student to understand. 
+                        Return ONLY a JSON array of strings like this: ["Step 1: ...", "Step 2: ..."] 
+                        Do not include any other text or markdown.`
+
+                    }]
+                }]
+            })
+        });
+
+            const result = await response.json();
+           if (result.candidates && result.candidates[0]) {
+    const aiRawText = result.candidates[0].content.parts[0].text;
+    const cleanJson = aiRawText.replace(/```json|```/g, "").trim();
+    const stepsArray = JSON.parse(cleanJson);
+
+    displayArea.innerText = "--- HOW TO SOLVE ---\n\n" + stepsArray.join("\n\n");
+} else if (result.error && result.error.code === 429) {
+    // 🟢 HANDLE THE 429 ERROR GRACEFULLY
+    displayArea.innerText = "The tutor is busy. Please wait 60 seconds and try again!";
+    displayArea.style.color = "var(--danger-red)";
+} else {
+    displayArea.innerText = "Oops! Something went wrong. Try again.";
+}
+       } catch (err) {
+            console.error("AI/Firebase Error:", err);
+            displayArea.innerText = "Oops! I hit a snag. Try clicking hint again.";
+        }
     });
 }
-
 

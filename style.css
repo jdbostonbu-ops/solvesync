@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+
 :root {
   --slate-dark: #0f172a;
   --board-bg: #1e293b;
@@ -15,7 +17,9 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
+  height: auto;
+  padding: 40px 0; 
   font-family: 'Comic Neue', sans-serif, cursive; /* Technical, monospaced feel */
   color: var(--chalk-text);
 }
@@ -223,3 +227,6 @@ h1 { font-size: 1.2rem; margin: 0; letter-spacing: 3px; color: var(--accent-cyan
 .shake-screen {
   animation: screenShake 0.4s infinite;
 }
+
+ 
+
