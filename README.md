@@ -1,5 +1,5 @@
 # SolveSync 🚀
-A real-time collaborative math platform built for interactive learning, designed to bridge the gap between algorithmic problem solving and pedagogical clarity.
+A real-time math app designed to bridge the gap between algorithmic problem solving and pedagogical clarity.
 
 ## 👤 Author
 **Jacqueline**  
@@ -10,6 +10,17 @@ A real-time collaborative math platform built for interactive learning, designed
 <p align="center">
   <img src="SolveSync.gif" alt="SolveSync Demo" width="600">
 </p>
+
+## 🌐 Compatibility & Optimization
+
+| Browser / Device | Status | Performance Notes |
+| :--- | :--- | :--- |
+| **Google Chrome** | ✅ Compatible | Full support for real-time synchronization. |
+| **Microsoft Edge** | ✅ Compatible | Full support for Chromium rendering. |
+| **Safari** | ✅ Compatible | Full support for WebKit performance. |
+| **Firefox** | ✅ Supported | Full support for UI and Algebra engine. |
+| **iPad & Tablets** | ✅ Supported | Optimized for touch-based learning. |
+| **iPhone (iOS)** | ⚠️ Limited | **Landscape Orientation** + **50% zoom-out** required. |
 
 ## 🌟 Features and Curriculum Level
 - **Real-Time Sync:** Powered by Firebase Realtime Database for instant tutor-student interaction and work tracking.
@@ -29,7 +40,7 @@ A basic app with "Slate & Cyan" engineering aesthetic with Comic Neue typography
 - **Persistence Banner**: A dissolving "Star Banner" with fairy dust that rewards every 10 rounds played (correct or incorrect) to encourage long-term effort.
 
 ## 🧠 AI-Powered Hint Engine (Gemini 2.5 Flash)
-- The "Show Work" system uses a Probabilistic Logic Engine. SolveSync no longer relies on hard-coded arrays. Instead, it uses Google Gemini 3.1 Flash to generate solutions dynamically.
+- The "Show Work" system uses a Probabilistic Logic Engine. SolveSync uses Google Gemini 2.5 Flash to generate solutions dynamically.
 - **Intent-Based Pathing:** The system sends the math problem from Firebase to the AI API with a custom "Tutor Prompt." This makes sure the explanations are for 4th–8th grade levels.
 - **Dynamic Step Expansion:** The engine now scales automatically. Simple problems may return 3 steps, and complex algebra equations can generate 7–10 steps without code changes.
 - **Real-Time Reasoning:** The AI analyzes the numbers in real-time, giving students a tutoring experience to practice addition, subtraction, division, multiplication and algebra on their own.
@@ -40,16 +51,7 @@ A basic app with "Slate & Cyan" engineering aesthetic with Comic Neue typography
 - **Backend:** Firebase Realtime Database
 - **Secure Config:** Environment variables (.env) for VITE_GEMINI_API_KEY to prevent credential leakage.
 
-## 🌐 Compatibility & Optimization
 
-| Browser / Device | Status | Performance Notes |
-| :--- | :--- | :--- |
-| **Google Chrome** | ✅ Compatible | Full support for real-time synchronization. |
-| **Microsoft Edge** | ✅ Compatible | Full support for Chromium rendering. |
-| **Safari** | ✅ Compatible | Full support for WebKit performance. |
-| **Firefox** | ✅ Supported | Full support for UI and Algebra engine. |
-| **iPad & Tablets** | ✅ Supported | Optimized for touch-based learning. |
-| **iPhone (iOS)** | ⚠️ Limited | **Landscape Orientation** + **50% zoom-out** required. |
 
 
 
