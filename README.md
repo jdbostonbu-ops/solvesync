@@ -22,7 +22,7 @@ A real-time math app designed to bridge the gap between algorithmic problem solv
 | **iPad & Tablets** | ✅ Supported | Optimized for touch-based learning. |
 | **iPhone (iOS)** | ⚠️ Limited | **Landscape Orientation** + **50% zoom-out** required. |
 
-`Note: it takes TTS 28 seconds to scan the page and initiate reading.`
+`Note: it takes TTS 34 seconds to scan the page and initiate reading.`
 
 ## 🌟 Features and Curriculum Level
 - **Real-Time Sync:** Powered by Firebase Realtime Database for instant tutor-student interaction and work tracking.

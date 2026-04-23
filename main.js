@@ -418,7 +418,7 @@ if (hintBtn) {
     const cleanJson = aiRawText.replace(/```json|```/g, "").trim();
     const stepsArray = JSON.parse(cleanJson);
     const fullHintText = stepsArray.join("\n\n");
-    displayArea.innerText = "--- HOW TO SOLVE ---\n\n" + fullHintText;
+    displayArea.innerText = "--- A Tutor Will Read and Explain in 30 Seconds ---\n\n" + fullHintText;
     playMathAnswer(fullHintText);
 } else if (result.error && result.error.code === 429) {
     // 🟢 HANDLE THE 429 ERROR GRACEFULLY
