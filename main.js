@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, onValue, get, child } from "firebase/database";
 import confetti from 'canvas-confetti';
-import { playMathAnswer } from './utils/tts.js';
+
 // 1. GLOBAL STATE (Memory stays alive here)
 let currentStreak = 0;
 
@@ -395,7 +395,7 @@ if (hintBtn) {
 
             const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
             const MODEL = "gemini-2.5-flash"; // Updated to the latest Gemini model
-            const URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest${MODEL}:generateContent?key=${API_KEY}`;
+            const URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`;
             const response = await fetch(URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -433,4 +433,41 @@ if (hintBtn) {
         }
     });
 }
+
+
+export async function playMathAnswer(text) {
+  // 1. Get the key using the VITE_ prefix
+  const apiKey = import.meta.env.VITE_TTS_API_KEY;
+
+  // 2. Use the correct Google TTS URL
+  const url = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`;
+
+  if (!apiKey) {
+    console.error("TTS Error: API Key is undefined. Check your .env file!");
+    return;
+  }
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        input: { text: text.toLowerCase().replace(/`/g, "").replace(/['"]/g, "").replace(/\*/g, "$1 . ")},//This makes the tts avoid saying backquote, single/double quotes, and asterisks which can mess up the audio output. It also converts everything to lowercase for a more natural sound.
+        voice: { languageCode: "en-US", name: "en-US-Journey-F" }, 
+        audioConfig: { audioEncoding: "MP3" },
+      }),
+    });
+
+    const data = await response.json();
+    
+    if (data.audioContent) {
+      const audio = new Audio(`data:audio/mp3;base64,${data.audioContent}`);
+      audio.play();
+    }
+  } catch (err) {
+    console.error("TTS Fetch Error:", err);
+  }
+}
+
+
 

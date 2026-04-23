@@ -22,6 +22,8 @@ A real-time math app designed to bridge the gap between algorithmic problem solv
 | **iPad & Tablets** | ✅ Supported | Optimized for touch-based learning. |
 | **iPhone (iOS)** | ⚠️ Limited | **Landscape Orientation** + **50% zoom-out** required. |
 
+`Note: it takes TTS 28 seconds to scan the page and initiate reading.`
+
 ## 🌟 Features and Curriculum Level
 - **Real-Time Sync:** Powered by Firebase Realtime Database for instant tutor-student interaction and work tracking.
 - **Adaptive AI Hint Engine:** An intelligent "Show Work" system powered by Gemini 2.5 Flash from [Google AI Studio](https://aistudio.google.com/). It utilizes Probabilistic Logic to generate dynamic, step-by-step solutions that scale from 3 to 10+ steps based on problem complexity.
