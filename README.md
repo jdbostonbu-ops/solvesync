@@ -1,5 +1,5 @@
 # SolveSync 🚀
-A real-time math app designed to bridge the gap between algorithmic problem solving and pedagogical clarity.
+A real-time math app designed to bridge the gap between algorithmic problem solving and pedagogical clarity. **From Data (Firebase) → Intelligence (AI) → Voice (TTS).**
 
 ## 👤 Author
 **Jacqueline**  
@@ -25,6 +25,7 @@ A real-time math app designed to bridge the gap between algorithmic problem solv
 ## 🌟 Features and Curriculum Level
 - **Real-Time Sync:** Powered by Firebase Realtime Database for instant tutor-student interaction and work tracking.
 - **Adaptive AI Hint Engine:** An intelligent "Show Work" system powered by Gemini 2.5 Flash from [Google AI Studio](https://aistudio.google.com/). It utilizes Probabilistic Logic to generate dynamic, step-by-step solutions that scale from 3 to 10+ steps based on problem complexity.
+- **🔊 AI Voice Tutoring:** Integrated Google Cloud Text-to-Speech (TTS) using high-quality Neural2 voices to read step-by-step solutions aloud, enhancing accessibility and engagement.
 
 ##  📚 Modern UI:** 
 A basic app with "Slate & Cyan" engineering aesthetic with Comic Neue typography for a legible, classroom-chalkboard feel. Includes high-score persistence and visual "Success Glow" effects.
@@ -40,9 +41,9 @@ A basic app with "Slate & Cyan" engineering aesthetic with Comic Neue typography
 - **Persistence Banner**: A dissolving "Star Banner" with fairy dust that rewards every 10 rounds played (correct or incorrect) to encourage long-term effort.
 
 ## 🧠 AI-Powered Hint Engine (Gemini 2.5 Flash)
-- The "Show Work" system uses a Probabilistic Logic Engine. SolveSync uses Google Gemini 2.5 Flash to generate solutions dynamically.
-- **Intent-Based Pathing:** The system sends the math problem from Firebase to the AI API with a custom "Tutor Prompt." This makes sure the explanations are for 4th–8th grade levels.
-- **Dynamic Step Expansion:** The engine now scales automatically. Simple problems may return 3 steps, and complex algebra equations can generate 7–10 steps without code changes.
+- **Deterministic-to-Probabilistic Logic:** SolveSync has transitioned from fixed math logic to a Probabilistic Logic Engine using Google Gemini 2.5 Flash to generate solutions dynamically.
+- **Multimodal Learning:** Combines visual step-by-step text with **Natural Language Audio** to cater to different learning styles.
+- **Dynamic Step Expansion:** The engine scales automatically, generating anywhere from 3 to 10+ steps based on problem complexity.
 - **Real-Time Reasoning:** The AI analyzes the numbers in real-time, giving students a tutoring experience to practice addition, subtraction, division, multiplication and algebra on their own.
 
 ## 🛠 Tech Stack Update

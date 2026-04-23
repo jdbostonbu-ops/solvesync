@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, onValue, get, child } from "firebase/database";
 import confetti from 'canvas-confetti';
-
+import { playMathAnswer } from './utils/tts.js';
 // 1. GLOBAL STATE (Memory stays alive here)
 let currentStreak = 0;
 
@@ -371,12 +371,13 @@ if (submitBtn) {
 }
 
 
-// --- DYNAMIC AI HINT LOGIC using Gemini AI API ---
 if (hintBtn) {
     hintBtn.addEventListener('click', async (e) => {
         e.stopPropagation();
         
         displayArea.innerText = "Analyzing problem and generating steps...";
+        // Inside your hint generation function in main.js
+
 
         const problemRef = ref(db, 'activeProblem');
         
@@ -411,13 +412,14 @@ if (hintBtn) {
             })
         });
 
-            const result = await response.json();
-           if (result.candidates && result.candidates[0]) {
+    const result = await response.json();
+    if (result.candidates && result.candidates[0]) {
     const aiRawText = result.candidates[0].content.parts[0].text;
     const cleanJson = aiRawText.replace(/```json|```/g, "").trim();
     const stepsArray = JSON.parse(cleanJson);
-
-    displayArea.innerText = "--- HOW TO SOLVE ---\n\n" + stepsArray.join("\n\n");
+    const fullHintText = stepsArray.join("\n\n");
+    displayArea.innerText = "--- HOW TO SOLVE ---\n\n" + fullHintText;
+    playMathAnswer(fullHintText);
 } else if (result.error && result.error.code === 429) {
     // 🟢 HANDLE THE 429 ERROR GRACEFULLY
     displayArea.innerText = "The tutor is busy. Please wait 60 seconds and try again!";
