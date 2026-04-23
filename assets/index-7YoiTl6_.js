@@ -1626,6 +1626,6 @@ FIREBASE: `))}restoreState_(){this.tryAuth(),this.tryAppCheck();for(const e of t
                         Return ONLY a JSON array of strings like this: ["Step 1: ...", "Step 2: ..."] 
                         Do not include any other text or markdown.`}]}]})})).json();if(l.candidates&&l.candidates[0]){const f=l.candidates[0].content.parts[0].text.replace(/```json|```/g,"").trim(),u=JSON.parse(f).join(`
 
-`);K.innerText=`--- HOW TO SOLVE ---
+`);K.innerText=`--- A Tutor Will Read and Explain in 30 Seconds ---
 
 `+u,Lu(u)}else l.error&&l.error.code===429?(K.innerText="The tutor is busy. Please wait 60 seconds and try again!",K.style.color="var(--danger-red)"):K.innerText="Oops! Something went wrong. Try again."}catch(t){console.error("AI/Firebase Error:",t),K.innerText="Oops! I hit a snag. Try clicking hint again."}});async function Lu(n){const t="https://texttospeech.googleapis.com/v1/text:synthesize?key=AIzaSyCle8rlyygPKFuE-gGsHL15ZvD6FtCueDQ";try{const s=await(await fetch(t,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({input:{text:n.toLowerCase().replace(/`/g,"").replace(/['"]/g,"").replace(/\*/g,"$1 . ")},voice:{languageCode:"en-US",name:"en-US-Journey-F"},audioConfig:{audioEncoding:"MP3"}})})).json();s.audioContent&&new Audio(`data:audio/mp3;base64,${s.audioContent}`).play()}catch(i){console.error("TTS Fetch Error:",i)}}
