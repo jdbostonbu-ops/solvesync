@@ -4,14 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link href="https://fonts.googleapis.com" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" href="https://fav.farm/➗" />
+    <link rel="icon" href="data:,">
     <title>SolveSync | Collaborative Problem Solving</title>
     <small id="connection-status">CLOUD_CONNECTED</small>
-  <script type="module" crossorigin src="/SolveSync/assets/index--voW_1ZE.js"></script>
-  <link rel="stylesheet" crossorigin href="/SolveSync/assets/index-B9nY5lLz.css">
+  <script type="module" crossorigin src="/solvesync/assets/index-xgLdJEZl.js"></script>
+  <link rel="stylesheet" crossorigin href="/solvesync/assets/index-BJY8B2IC.css">
 </head>
 <body>
-
+  <!-- ✨ NEW: PERSISTENCE BANNER GOES HERE ✨ -->
+  <div id="persistence-banner" style="
+      position: fixed; 
+      top: -100px; 
+      left: 50%; 
+      transform: translateX(-50%); 
+      background: linear-gradient(90deg, #e879f9, #a855f7); 
+      color: white; 
+      padding: 15px 40px; 
+      border-radius: 50px; 
+      font-size: 24px; 
+      font-weight: 900; 
+      z-index: 20000; 
+      box-shadow: 0 0 30px rgba(168, 85, 247, 0.6); 
+      transition: all 1s ease-in-out; 
+      pointer-events: none;
+      opacity: 0;">
+      10 ROUNDS! YOU'RE A STAR! 🌟
+  </div>
   <div id="app-container">
     <div id="chalkboard">
       <header>
@@ -37,6 +58,7 @@
         STREAK: <span id="streak-num">0</span> | 
         RECORD: <span id="high-score-num">0</span>
         </div>
+        <button id="hint-btn" class="cat-btn" style="background: #fbbf24; color: #000;">💡 Show Work</button>
         <button id="next-btn" class="primary-btn">SHUFFLE_NEW</button>
         <button id="submit-btn">SUBMIT_ANSWER</button>
     </div>
@@ -51,6 +73,72 @@
 
     </div>
   </div>
-<script type="module" src="./main.js"></script>    
+
+<!-- 🤖 CENTERED BRANCHY THE MATH BOT -->
+<div id="math-bot" style="
+    position: fixed; 
+    bottom: -300px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    font-size: 200px; 
+    transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+    z-index: 1000; 
+    pointer-events: none;
+    text-align: center;">
+    
+    🤖
+    
+    <!-- Speech Bubble centered above the bot -->
+    <div id="bot-bubble" style="
+        position: absolute; 
+        top: -100px; 
+        left: 50%; 
+        transform: translateX(-50%); 
+        background: #fbbf24; 
+        padding: 12px 25px; 
+        border-radius: 20px; 
+        font-size: 30px; 
+        color: #1e293b; 
+        font-weight: bold; 
+        display: none; 
+        white-space: nowrap; 
+        border: 4px solid white; 
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
+        3-IN-A-ROW! MATH POWER! ⚡
+    </div>
+</div>
+
+<!-- 🚀 STREAK 5: COSMO THE ROCKET -->
+<div id="cosmo-rocket" style="
+    position: fixed; 
+    bottom: -400px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    font-size: 180px; 
+    transition: bottom 1s cubic-bezier(0.95, 0.05, 0.795, 0.035); 
+    z-index: 10000; 
+    pointer-events: none;">
+    🚀
+    <div id="cosmo-bubble" style="
+        position: absolute; 
+        top: -40px; 
+        left: 50%; 
+        transform: translateX(-50%); 
+        background: #f97316; 
+        padding: 15px 30px; 
+        border-radius: 50px; 
+        font-size: 28px; 
+        color: white; 
+        font-weight: 900; 
+        display: none; 
+        white-space: nowrap; 
+        border: 6px solid #fbbf24; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        5-STREAK! BLAST OFF! ☄️
+    </div>
+</div>
+
+    
 </body>
 </html>
+
