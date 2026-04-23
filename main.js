@@ -395,7 +395,7 @@ if (hintBtn) {
 
             const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
             const MODEL = "gemini-2.5-flash"; // Updated to the latest Gemini model
-            const URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`;
+            const URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest${MODEL}:generateContent?key=${API_KEY}`;
             const response = await fetch(URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
