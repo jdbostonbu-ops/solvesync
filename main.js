@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, onValue, get, child } from "firebase/database";
 import confetti from 'canvas-confetti';
 
+
 // 1. GLOBAL STATE (Memory stays alive here)
 let currentStreak = 0;
 
@@ -392,12 +393,27 @@ if (hintBtn) {
                 displayArea.innerText = "Please select a math problem first!";
                 return;
             }
+            
+            
+            const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+            const MODEL = "gemini-2.5-flash"; // Updated to the latest Gemini model
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`;
+            
+            const response = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{
+                        text: `Act as a 4th-8th grade math tutor. Solve this problem: "${problemText}". 
+                        Break it into exactly as many steps as needed for a student to understand. 
+                        Return ONLY a JSON array of strings like this: ["Step 1: ...", "Step 2: ..."] 
+                        Do not include any other text or markdown.`
 
-            const response = await fetch('/api/solve', {
-                method: 'POST',
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ prompt: problemText })
-            });
+                    }]
+                }]
+            })
+        });
 
     const result = await response.json();
     if (result.candidates && result.candidates[0]) {
