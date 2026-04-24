@@ -74,6 +74,4 @@ y/
 # Ignore Google Cloud Credentials
 solvesync-6f45a-22a5078e9fd7.json
 
-dist
-.vercel
-.env*.local
+
