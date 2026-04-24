@@ -396,12 +396,12 @@ if (hintBtn) {
             
             
             const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-            const MODEL = "gemini-pro"; // Updated to the latest Gemini model
+            const MODEL = "gemini-flash-latest"; // Updated to the latest Gemini model
             const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`;
             
             const response = await fetch(url, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json", "x-goog-api-key": API_KEY  },
             body: JSON.stringify({
                 contents: [{
                     parts: [{
