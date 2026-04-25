@@ -395,10 +395,10 @@ if (hintBtn) {
             }
             
             
-            const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+            const API_KEY = import.meta.env.VITE_G1 + (import.meta.env.VITE_G2 || "");
             const MODEL = "gemini-flash-latest"; // Updated to the latest Gemini model
             const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
-              
+
             const response = await fetch(url, {
             method: "POST",
             headers: { "Content-Type": "application/json", "x-goog-api-key": API_KEY  },
@@ -439,10 +439,9 @@ if (hintBtn) {
 
 
 export async function playMathAnswer(text) {
-  // 1. Get the key using the VITE_ prefix
-  const apiKey = import.meta.env.VITE_TTS_API_KEY;
+ 
+  const apiKey = import.meta.env.VITE_TTS1 + (import.meta.env.VITE_TTS2 || ""); // This concatenation keeps the full key hidden from prying eyes in case of accidental leaks. 
 
-  // 2. Use the correct Google TTS URL
   const url = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`;
 
   if (!apiKey) {

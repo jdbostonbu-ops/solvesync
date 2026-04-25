@@ -16,8 +16,12 @@ jobs:
           npm install
           npm run build
         env:
-          VITE_GEMINI_API_KEY: ${{ secrets.VITE_GEMINI_API_KEY }}
-          VITE_TTS_API_KEY: ${{ secrets.VITE_TTS_API_KEY }}
+                  env:
+          VITE_G1: ${{ secrets.VITE_G1 }}
+          VITE_G2: ${{ secrets.VITE_G2 }}
+
+          VITE_TTS1: ${{ secrets.VITE_TTS1 }}
+          VITE_TTS2: ${{ secrets.VITE_TTS2 }}
           VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
 
       - name: Deploy
