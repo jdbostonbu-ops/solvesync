@@ -395,7 +395,7 @@ if (hintBtn) {
             }
             
             
-            const API_KEY = [import.meta.env.VITE_G1 + import.meta.env.VITE_G2].join(''); // This concatenation keeps the full key hidden from prying eyes in case of accidental leaks.
+            const API_KEY = [import.meta.env.VITE_G1, import.meta.env.VITE_G2].join(''); // This concatenation keeps the full key hidden from prying eyes in case of accidental leaks.
             const MODEL = "gemini-flash-latest"; // Updated to the latest Gemini model
             const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
 
@@ -440,7 +440,7 @@ if (hintBtn) {
 
 export async function playMathAnswer(text) {
  
-  const apiKey = [import.meta.env.VITE_TTS1 + import.meta.env.VITE_TTS2].join(''); // This concatenation keeps the full key hidden from prying eyes in case of accidental leaks. 
+  const apiKey = [import.meta.env.VITE_TTS1, import.meta.env.VITE_TTS2].join(''); // This concatenation keeps the full key hidden from prying eyes in case of accidental leaks. 
 
   const url = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`;
 
