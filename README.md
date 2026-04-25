@@ -51,7 +51,7 @@ A basic app with "Slate & Cyan" engineering aesthetic with Comic Neue typography
 ## 🛠 Tech Stack Update
 - **Frontend:** Vite, JavaScript (ES6+), CSS3
 - **AI Integration:** Google Gemini API (Generative AI)
-- **Backend:** Firebase Realtime Database
+- **Backend:** Firebase Realtime Database Math Problem generator
 - **Secure Config:** Environment variables (.env) for VITE_GEMINI_API_KEY to prevent credential leakage and GitHub secrets used to inject the apiKEY.
 
 
