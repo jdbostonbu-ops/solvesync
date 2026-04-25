@@ -1,5 +1,5 @@
 # SolveSync 🚀
-A real-time math app designed to bridge the gap between algorithmic problem solving and clarity. **From Data (Firebase) → Intelligence (AI) → Voice (TTS).**
+A real-time math app designed to bridge the gap between algorithmic problem solving, clarity while using tts to read the solution. **From Data (Firebase) → Intelligence (AI) → Voice (TTS).**
 
 ## 👤 Author
 **Jacqueline**  
