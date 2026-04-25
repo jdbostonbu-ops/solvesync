@@ -16,7 +16,6 @@ jobs:
           npm install
           npm run build
         env:
-                  env:
           VITE_G1: ${{ secrets.VITE_G1 }}
           VITE_G2: ${{ secrets.VITE_G2 }}
 
