@@ -396,7 +396,7 @@ if (hintBtn) {
             
             
             const API_KEY = [import.meta.env.VITE_G1, import.meta.env.VITE_G2].join(''); // This concatenation keeps the full key hidden from prying eyes in case of accidental leaks.
-            const MODEL = "gemini-flash-latest"; // Updated to the latest Gemini model
+            const MODEL = "gemini-1.5-flash"; // Updated to the latest Gemini model
             const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
 
             const response = await fetch(url, {
