@@ -8,7 +8,13 @@ from flask_cors import CORS
 import re
 
 load_dotenv()
-# Initialize Firebase Admin using a server-side credentials file
+app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}})
+
+# 1. Get the absolute path to the directory of app.py
+base_dir = os.path.abspath(os.path.dirname(__file__))
+key_path = os.path.join(base_dir, 'solvesync-6f45a-22a5078e9fd7.json')
+
 # Ensure this file is in your .gitignore file!
 cred = credentials.Certificate("solvesync-6f45a-22a5078e9fd7.json")
 firebase_admin.initialize_app(cred, {
