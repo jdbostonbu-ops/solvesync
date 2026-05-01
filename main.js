@@ -6,10 +6,14 @@ import confetti from 'canvas-confetti';
 // 1. GLOBAL STATE (Memory stays alive here)
 let currentStreak = 0;
 
-// Replace old Firebase SDK calls with your Python backend endpoint:
+// Set your deployed Render backend URL here
+const BACKEND_URL = "https://solvesync-ras8.onrender.com"; // Replace with your actual Render URL
+
+
+// Firebase SDK calls with your Python backend endpoint:
 async function getActiveProblem() {
   try {
-    const response = await fetch('/api/active-problem');
+    const response = await fetch(`${BACKEND_URL}/api/active-problem`);
     const data = await response.json();
     
     if (data.problem) {
@@ -17,11 +21,14 @@ async function getActiveProblem() {
       return data.problem;
     } else {
       console.error("No problem found.");
+      return null;
     }
   } catch (error) {
     console.error("Error fetching problem:", error);
+    return null;
   }
 }
+
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);

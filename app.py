@@ -11,6 +11,7 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
+
 # 1. Get the absolute path to the directory of app.py
 base_dir = os.path.abspath(os.path.dirname(__file__))
 key_path = os.path.join(base_dir, 'solvesync-6f45a-22a5078e9fd7.json')
