@@ -11,13 +11,33 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
+# Load credentials from environment variable if running on Render
+firebase_secret = os.environ.get("FIREBASE_CONFIG_JSON")
 
-# 1. Get the absolute path to the directory of app.py
-base_dir = os.path.abspath(os.path.dirname(__file__))
-key_path = os.path.join(base_dir, 'solvesync-6f45a-22a5078e9fd7.json')
+# Load credentials from environment variable or file
+if os.environ.get("FIREBASE_TYPE"):
+    # 1. Cloud Configuration using individual variables
+    cred_dict = {
+        "type": os.environ.get("FIREBASE_TYPE"),
+        "project_id": os.environ.get("FIREBASE_PROJECT_ID"),
+        "private_key_id": os.environ.get("FIREBASE_PRIVATE_KEY_ID"),
+        "private_key": os.environ.get("FIREBASE_PRIVATE_KEY", "").replace('\\n', '\n'),
+        "client_email": os.environ.get("FIREBASE_CLIENT_EMAIL"),
+        "client_id": os.environ.get("FIREBASE_CLIENT_ID"),
+        "auth_uri": os.environ.get("FIREBASE_AUTH_URI", "https://accounts.google.com/o/oauth2/auth"),
+        "token_uri": os.environ.get("FIREBASE_TOKEN_URI", "https://oauth2.googleapis.com/token"),
+        "auth_provider_x509_cert_url": os.environ.get("FIREBASE_AUTH_PROVIDER_CERT_URL", "https://www.googleapis.com/oauth2/v1/certs"),
+        "client_x509_cert_url": os.environ.get("FIREBASE_CLIENT_CERT_URL"),
+        "universe_domain": os.environ.get("FIREBASE_UNIVERSE_DOMAIN", "googleapis.com")
+    }
+    cred = credentials.Certificate(cred_dict)
+else:
+    # 2. Local Fallback Configuration (reads your local JSON file)
+    base_dir = os.path.abspath(os.path.dirname(__file__))
+    key_path = os.path.join(base_dir, 'solvesync-6f45a-22a5078e9fd7.json')
+    cred = credentials.Certificate(key_path)
 
-# Ensure this file is in your .gitignore file!
-cred = credentials.Certificate("solvesync-6f45a-22a5078e9fd7.json")
+# Initialize Firebase
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://solvesync-6f45a-default-rtdb.firebaseio.com/'
 })
