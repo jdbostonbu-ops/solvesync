@@ -1,23 +1,26 @@
 export async function playMathAnswer(solutionText) {
-  const API_KEY = import.meta.env.VITE_GOOGLE_TTS_API_KEY; 
-  const url = `https://googleapis.com/v1/text:synthesize?key=${API_KEY}`;
-
+  // Define the request body to be sent to your backend
   const requestBody = {
-    input: { text: solutionText },
-    voice: { languageCode: 'en-US', name: 'en-US-Neural2-F' }, // High-quality voice
+    text: solutionText,
+    voice: { languageCode: 'en-US', name: 'en-US-Neural2-F' },
     audioConfig: { audioEncoding: 'MP3' },
   };
 
   try {
-    const response = await fetch(url, {
+    // Call your local or deployed Flask backend instead of Google directly
+    const response = await fetch('/api/synthesize', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(requestBody),
     });
 
+    if (!response.ok) {
+      throw new Error(`Server responded with status: ${response.status}`);
+    }
+
     const data = await response.json();
     
-    // Convert the base64 string from Google into a playable sound
+    // Convert the base64 string from Google (via Flask) into a playable sound
     const audioBlob = b64toBlob(data.audioContent, 'audio/mp3');
     const audioUrl = URL.createObjectURL(audioBlob);
     const audio = new Audio(audioUrl);
@@ -39,4 +42,3 @@ function b64toBlob(b64Data, contentType) {
   }
   return new Blob([new Uint8Array(byteArrays)], { type: contentType });
 }
-

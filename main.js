@@ -6,16 +6,22 @@ import confetti from 'canvas-confetti';
 // 1. GLOBAL STATE (Memory stays alive here)
 let currentStreak = 0;
 
-// 2. FIREBASE CONFIG
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY, // updated apiKey with Google cloud, secured apiKey to prevent leakage by creating an env file //
-  authDomain: "solvesync-6f45a.firebaseapp.com",
-  databaseURL: "https://solvesync-6f45a-default-rtdb.firebaseio.com", 
-  projectId: "solvesync-6f45a",
-  storageBucket: "solvesync-6f45a.appspot.com",
-  messagingSenderId: "...",
-  appId: "..."
-};
+// Replace old Firebase SDK calls with your Python backend endpoint:
+async function getActiveProblem() {
+  try {
+    const response = await fetch('/api/active-problem');
+    const data = await response.json();
+    
+    if (data.problem) {
+      console.log("Active problem retrieved by server:", data.problem);
+      return data.problem;
+    } else {
+      console.error("No problem found.");
+    }
+  } catch (error) {
+    console.error("Error fetching problem:", error);
+  }
+}
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
@@ -373,103 +379,100 @@ if (submitBtn) {
 
 
 if (hintBtn) {
-    hintBtn.addEventListener('click', async (e) => {
-        e.stopPropagation();
-        
-        displayArea.innerText = "Analyzing problem and generating steps...";
-        // Inside your hint generation function in main.js
+  hintBtn.addEventListener('click', async (e) => {
+    e.stopPropagation();
 
+    displayArea.innerText = "Analyzing problem and generating steps...";
 
-        const problemRef = ref(db, 'activeProblem');
-        
-        try {
-            const snapshot = await get(problemRef);
-            const problemText = snapshot.val();
-            console.log("Sending to AI:", problemText); 
+    const problemRef = ref(db, 'activeProblem');
 
-            if (!problemText) {
-                displayArea.innerText = "NEW_PROBLEM_LOADED";
-                displayArea.style.color = "var(--chalk-text)";
-                displayArea.innerText = "Please select a math problem first!";
-                return;
-            }
-            
-            
-            const API_KEY = [import.meta.env.VITE_G1, import.meta.env.VITE_G2].join(''); // This concatenation keeps the full key hidden from prying eyes in case of accidental leaks.
-            const MODEL = "gemini-2.5-flash"; // Updated to the latest Gemini model
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
+    try {
+      const snapshot = await get(problemRef);
+      const problemText = snapshot.val();
 
-            const response = await fetch(url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json", "x-goog-api-key": API_KEY  },
-            body: JSON.stringify({
-                contents: [{
-                    parts: [{
-                        text: `Act as a 4th-8th grade math tutor. Solve this problem: "${problemText}". 
-                        Break it into exactly as many steps as needed for a student to understand. 
-                        Return ONLY a JSON array of strings like this: ["Step 1: ...", "Step 2: ..."] 
-                        Do not include any other text or markdown.`
+      console.log("Sending to AI:", problemText);
 
-                    }]
-                }]
-            })
-        });
+      if (!problemText) {
+        displayArea.innerText = "NEW_PROBLEM_LOADED";
+        displayArea.style.color = "var(--chalk-text)";
+        displayArea.innerText = "Please select a math problem first!";
+        return;
+      }
 
-    const result = await response.json();
-    if (result.candidates && result.candidates[0]) {
-    const aiRawText = result.candidates[0].content.parts[0].text;
-    const cleanJson = aiRawText.replace(/```json|```/g, "").trim();
-    const stepsArray = JSON.parse(cleanJson);
-    const fullHintText = stepsArray.join("\n\n");
-    displayArea.innerText = "--- A Tutor Will Read in 30 Seconds ---\n\n" + fullHintText;
-    playMathAnswer(fullHintText);
-} else if (result.error && result.error.code === 429) {
-    // 🟢 HANDLE THE 429 ERROR GRACEFULLY
-    displayArea.innerText = "The tutor is busy. Please wait 60 seconds and try again!";
-    displayArea.style.color = "var(--danger-red)";
-} else {
-    displayArea.innerText = "Oops! Something went wrong. Try again.";
+      // Use relative paths to connect securely to your backend
+      const response = await fetch("/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          problem: problemText
+        })
+      });
+
+      const result = await response.json();
+      console.log(result);
+
+      if (result.candidates && result.candidates.length > 0) {
+        const aiRawText = result.candidates[0].content.parts[0].text;
+
+        const cleanJson = aiRawText
+          .replace(/```json|```/g, "")
+          .trim();
+
+        const stepsArray = JSON.parse(cleanJson);
+        const fullHintText = stepsArray.join("\n\n");
+
+        displayArea.innerText =
+          "--- A Tutor Will Read in 30 Seconds ---\n\n" + fullHintText;
+
+        // 🔊 Call your secure TTS function
+        playMathAnswer(fullHintText);
+
+      } else if (result.error && result.error.code === 429) {
+        displayArea.innerText =
+          "The tutor is busy. Please wait 60 seconds and try again!";
+        displayArea.style.color = "var(--danger-red)";
+      } else {
+        displayArea.innerText = "Oops! Something went wrong. Try again.";
+      }
+
+    } catch (err) {
+      console.error("AI/Firebase Error:", err);
+      displayArea.innerText = "Oops! I hit a snag. Try clicking hint again.";
+    }
+  });
 }
-       } catch (err) {
-            console.error("AI/Firebase Error:", err);
-            displayArea.innerText = "Oops! I hit a snag. Try clicking hint again.";
-        }
-    });
-}
-
 
 export async function playMathAnswer(text) {
- 
-  const apiKey = [import.meta.env.VITE_TTS1, import.meta.env.VITE_TTS2].join(''); // This concatenation keeps the full key hidden from prying eyes in case of accidental leaks. 
-
-  const url = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`;
-
-  if (!apiKey) {
-    console.error("TTS Error: API Key is undefined. Check your .env file!");
+  if (!text) {
+    console.error("TTS Error: No text provided.");
     return;
   }
 
   try {
-    const response = await fetch(url, {
+    // Directing to your backend instead of an exposed external API
+    const response = await fetch("/tts", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify({
-        input: { text: text.toLowerCase().replace(/`/g, "").replace(/['"]/g, "").replace(/\*/g, "$1 . ")},//This makes the tts avoid saying backquote, single/double quotes, and asterisks which can mess up the audio output. It also converts everything to lowercase for a more natural sound.
-        voice: { languageCode: "en-US", name: "en-US-Journey-F" }, 
-        audioConfig: { audioEncoding: "MP3" },
-      }),
+        text
+      })
     });
 
     const data = await response.json();
-    
+
     if (data.audioContent) {
-      const audio = new Audio(`data:audio/mp3;base64,${data.audioContent}`);
+      // ✅ Use correct MIME type for the base64 audio payload
+      const audio = new Audio(`data:audio/mpeg;base64,${data.audioContent}`);
       audio.play();
+    } else {
+      console.error("TTS Error: No audio content returned", data);
     }
+
   } catch (err) {
     console.error("TTS Fetch Error:", err);
   }
 }
-
-
-
