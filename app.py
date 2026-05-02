@@ -72,9 +72,12 @@ def get_active_problem():
         return jsonify({"error": str(e)}), 500
 
 # 🧠 GEMINI ENDPOINT
-@app.route("/generate", methods=["POST"])
+@app.route("/generate", methods=["POST", "GET"])
 def generate():
     data = request.get_json()
+
+    if not data or "problem" not in data:
+        return jsonify({"error": "No problem provided"}), 400
     problem = data.get("problem")
 
     prompt = f"""Act as a 4th-8th grade math tutor. Solve this problem: "{problem}". 
@@ -82,25 +85,29 @@ Break it into exactly as many steps as needed for a student to understand.
 Return ONLY a JSON array of strings like this: ["Step 1: ...", "Step 2: ..."] 
 Do not include any other text or markdown."""
 
-    response = requests.post(
-        GEMINI_URL,
-        headers={
-            "Content-Type": "application/json",
-            "x-goog-api-key": GEMINI_API_KEY
-        },
-        json={
-            "contents": [
-                {
-                    "parts": [
-                        {"text": prompt}
-                    ]
-                }
-            ]
-        }
-    )
-
-    return jsonify(response.json())
-
+    try:
+        response = requests.post(
+            GEMINI_URL,
+            headers={
+                "Content-Type": "application/json",
+                "x-goog-api-key": GEMINI_API_KEY
+            },
+            json={
+                "contents": [
+                    {
+                        "parts": [
+                            {"text": prompt}
+                        ]
+                    }
+                ]
+            }
+        )
+        
+        # Return the response directly
+        return jsonify(response.json())
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # 🔊 TEXT-TO-SPEECH ENDPOINT
 @app.route("/tts", methods=["POST"])
@@ -129,9 +136,8 @@ def tts():
             }
         }
     )
-
+    
     return jsonify(response.json())
-
 
 # Define your route
 @app.route("/")
