@@ -38,6 +38,17 @@ async function getActiveProblem() {
   }
 }
 
+// 🧠 Trigger the function on page load to make it "active"
+document.addEventListener("DOMContentLoaded", async () => {
+    const activeProblem = await getActiveProblem();
+    if (activeProblem) {
+        console.log("Successfully retrieved problem:", activeProblem);
+        // You can update your DOM elements here (e.g., document.getElementById(...).innerText = activeProblem)
+    } else {
+        console.warn("Could not load the problem from the server.");
+    }
+});
+
 
 // 3. UI REFERENCES
 const inputField = document.getElementById('answer-input');
