@@ -11,7 +11,9 @@ import re
 load_dotenv()
 app = Flask(__name__)
 
+# This line is needed to allow your GitHub Pages site to talk to Render
 CORS(app, resources={r"/*": {"origins": "https://jdbostonbu-ops.github.io"}})
+
 # Using the library will immediately make VS Code recognize it as used
 data = {"status": "healthy"}
 json_string = json.dumps(data)
