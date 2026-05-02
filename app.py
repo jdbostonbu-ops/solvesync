@@ -5,18 +5,22 @@ import firebase_admin
 from firebase_admin import credentials, db
 from dotenv import load_dotenv
 from flask_cors import CORS
+import json
 import re
 
 load_dotenv()
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-# Load credentials from environment variable if running on Render
-firebase_secret = os.environ.get("FIREBASE_CONFIG_JSON")
+# Using the library will immediately make VS Code recognize it as used
+data = {"status": "healthy"}
+json_string = json.dumps(data)
 
-# Load credentials from environment variable or file
+print(json_string)
+
+# Determine the credentials path
 if os.environ.get("FIREBASE_TYPE"):
-    # 1. Cloud Configuration using individual variables
+    # Cloud Environment
     cred_dict = {
         "type": os.environ.get("FIREBASE_TYPE"),
         "project_id": os.environ.get("FIREBASE_PROJECT_ID"),
@@ -32,18 +36,14 @@ if os.environ.get("FIREBASE_TYPE"):
     }
     cred = credentials.Certificate(cred_dict)
 else:
-    # 2. Local Fallback Configuration (reads your local JSON file)
+    # Local Environment
     base_dir = os.path.abspath(os.path.dirname(__file__))
     key_path = os.path.join(base_dir, 'solvesync-6f45a-22a5078e9fd7.json')
     cred = credentials.Certificate(key_path)
 
-# Initialize Firebase
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://solvesync-6f45a-default-rtdb.firebaseio.com/'
 })
-
-app = Flask(__name__)
-CORS(app)
 
 # 🔐 ENV VARIABLES
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
@@ -102,7 +102,7 @@ def tts():
     data = request.get_json()
     text = data.get("text", "")
 
-    # 🔧 Clean text (same logic as your JS)
+    # 🔧 Clean text 
     cleaned_text = text.lower()
     cleaned_text = re.sub(r"[`'\"]", "", cleaned_text)
     cleaned_text = re.sub(r"\*", ". ", cleaned_text)
@@ -127,5 +127,10 @@ def tts():
     return jsonify(response.json())
 
 
+# Define your route
+@app.route("/")
+def index():
+    return jsonify({"status": "healthy", "message": "Solvesync server is up and running!"})
+
 if __name__ == "__main__":
-    app.run(port=5000, debug=True)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
