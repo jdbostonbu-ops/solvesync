@@ -10,8 +10,8 @@ import re
 
 load_dotenv()
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
 
+CORS(app, resources={r"/*": {"origins": "https://jdbostonbu-ops.github.io"}})
 # Using the library will immediately make VS Code recognize it as used
 data = {"status": "healthy"}
 json_string = json.dumps(data)
