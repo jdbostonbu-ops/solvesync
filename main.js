@@ -2,6 +2,15 @@ import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, onValue, get, child } from "firebase/database";
 import confetti from 'canvas-confetti';
 
+// 1. Safe dummy config to satisfy the linter/editor without exposing real keys
+const firebaseConfig = {
+  apiKey: "placeholder-key",
+  authDomain: "solvesync-6f45a.firebaseapp.com",
+  projectId: "solvesync-6f45a"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
 // 1. GLOBAL STATE (Memory stays alive here)
 let currentStreak = 0;
@@ -29,9 +38,6 @@ async function getActiveProblem() {
   }
 }
 
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
 
 // 3. UI REFERENCES
 const inputField = document.getElementById('answer-input');
